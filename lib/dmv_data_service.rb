@@ -1,6 +1,8 @@
 require 'faraday'
 require 'json'
 
+#Class appears to connect to data source and load remote data into local instance vars
+#NOTE: this code was fully functional, first try.  Hmmm, I wonder why... :)
 class DmvDataService
   def load_data(source)
     response = Faraday.get(source)
