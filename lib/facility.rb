@@ -13,4 +13,9 @@ class Facility
   def add_service(service)
     @services << service
   end
+
+  def include?(service_specified)
+    #Check to see if this facility provides this service
+    @services.find { |service| service == service_specified }
+  end
 end
