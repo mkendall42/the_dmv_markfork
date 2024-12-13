@@ -1,18 +1,22 @@
 require 'date'
 
+#This appears to track information on an individual vehicle that would be registered with the state DMV
+
 class Vehicle
   attr_reader :vin,
               :year,
               :make,
               :model,
-              :engine
+              :engine,
+              :registration_date
 
-  def initialize(vehicle_details)
+  def initialize(vehicle_details)         #Extract all data from a hash
     @vin = vehicle_details[:vin]
     @year = vehicle_details[:year]
     @make = vehicle_details[:make]
     @model = vehicle_details[:model]
     @engine = vehicle_details[:engine]
+    @registration_date = nil
   end
 
   def antique?
