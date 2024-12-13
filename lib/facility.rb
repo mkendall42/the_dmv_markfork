@@ -22,6 +22,10 @@ class Facility
     @services.find { |service| service == service_specified }
   end
 
-  #Next: registered_vehicles()
+  #Next: register_vehicle(arg)
+  def register_vehicle(vehicle)
+    #Only register the vehicle if this facility offers the service!
+    @registered_vehicles << vehicle if include?("Vehicle Registration")
+  end
 
 end

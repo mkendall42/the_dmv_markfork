@@ -38,5 +38,22 @@ RSpec.describe Facility do
     end
   end
 
-  describe '#'
+  describe '#verify services' do
+    it 'can register vehicles' do
+      @facility_1.add_service('Vehicle Registration')
+      @facility_1.register_vehicle(@cruz)
+      @facility_1.register_vehicle(@bolt)
+      @facility_1.register_vehicle(@camaro)
+
+      expect(@facility_1.registered_vehicles).to eq([@cruz, @bolt, @camaro])
+    end
+
+    it 'can only register a vehicle if that service is provided by facility' do
+      @facility_1.add_service("New Drivers License")
+      @facility_1.register_vehicle(@cruz)
+
+      expect(@facility_1.registered_vehicles).to eq([])
+    end
+  end
+
 end
