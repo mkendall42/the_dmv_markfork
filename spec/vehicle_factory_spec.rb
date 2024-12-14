@@ -6,7 +6,8 @@ require 'pry'
 RSpec.describe VehicleFactory do
   before(:each) do
     @factory = VehicleFactory.new()
-
+    @dds = DmvDataService.new()
+    @registration_data_list = @dds.wa_ev_registrations
 
     # @facility_1 = Facility.new({name: 'DMV Tremont Branch', address: '2855 Tremont Place Suite 118 Denver CO 80205', phone: '(720) 865-4600'})
     # @facility_2 = Facility.new({name: 'DMV Northeast Branch', address: '4685 Peoria Street Suite 101 Denver CO 80239', phone: '(720) 865-4600'})
@@ -30,6 +31,17 @@ RSpec.describe VehicleFactory do
       # expect(@facility_1.phone).to eq('(720) 865-4600')
       # expect(@facility_1.services).to eq([])
     end
+  end
+
+  describe '#create_vehicles()' do
+    it 'can create vehicles from acquired vehicle registration list' do
+      #Check that the list looks about right
+      expect(@registration_data_list.size).to be_a(Integer)   #Like in other spec file.  Don't know why it wouldn't be an integer...
+      expect(@registration_data_list).to be_a(Array)
+
+      expect(@factory.create_vehicles(@registration_data_list)).to be_a(Array)
+    end
+
   end
 
 end

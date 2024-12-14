@@ -8,4 +8,9 @@ class VehicleFactory
     #No explicit parameters for now (somewhat superfluous definition)
   end
 
+  def create_vehicles(vehicle_registration_list)
+    #Should return array of created vehicles
+    return []
+  end
+
 end
