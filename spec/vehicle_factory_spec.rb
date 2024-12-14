@@ -39,6 +39,8 @@ RSpec.describe VehicleFactory do
       expect(@registration_data_list.size).to be_a(Integer)   #Like in other spec file.  Don't know why it wouldn't be an integer...
       expect(@registration_data_list).to be_a(Array)
 
+      binding.pry
+      
       expect(@factory.create_vehicles(@registration_data_list)).to be_a(Array)
     end
 
