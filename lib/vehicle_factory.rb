@@ -2,11 +2,12 @@
 #(doesn't really build them), but I see why we could do this to 'help' the Vehicle class along.
 
 class VehicleFactory
-  # attr_reader
+  attr_reader :vehicles_manufactured
 
   def initialize()
     #No explicit parameters for now (somewhat superfluous definition)
     #Later: keep track of vehicle list here for kicks?
+    @vehicles_manufactured = []       #Keeps track of vehicles 'built' at this factory
   end
 
   def create_vehicles(vehicle_registration_list)

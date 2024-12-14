@@ -24,6 +24,7 @@ RSpec.describe VehicleFactory do
   describe '#initialize' do
     it 'can initialize' do
       expect(@factory).to be_a(VehicleFactory)
+      expect(@factory.vehicles_manufactured).to eq([])
 
       # expect(@facility_1).to be_an_instance_of(Facility)
       # expect(@facility_1.name).to eq('DMV Tremont Branch')
@@ -40,7 +41,7 @@ RSpec.describe VehicleFactory do
       expect(@registration_data_list).to be_a(Array)
 
       binding.pry
-      
+
       expect(@factory.create_vehicles(@registration_data_list)).to be_a(Array)
     end
 
