@@ -68,9 +68,10 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles[0].plate_type).to eq(:regular)
       expect(@facility_1.registered_vehicles[1].plate_type).to eq(:ev)
       expect(@facility_1.registered_vehicles[2].plate_type).to eq(:antique)
-      # expect(@facility_1.registered_vehicles[0].registration_date).to_not eq(nil)
-      # expect(@facility_1.registered_vehicles[1].registration_date).to_not eq(nil)
-      # expect(@facility_1.registered_vehicles[2].registration_date).to_not eq(nil)
+      expect(@facility_1.registered_vehicles[0].registration_date).to_not eq(nil)
+      expect(@facility_1.registered_vehicles[1].registration_date).to_not eq(nil)
+      expect(@facility_1.registered_vehicles[2].registration_date).to_not eq(nil)
+      binding.pry
     end
 
   end

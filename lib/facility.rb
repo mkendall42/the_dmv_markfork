@@ -23,14 +23,15 @@ class Facility
     @services.find { |service| service == service_specified }
   end
 
-  #Next: register_vehicle(arg)
   def register_vehicle(vehicle)
-    #Only register the vehicle if this facility offers the service!  Otherwise don't waste time with process.
+    #Only register the vehicle if this facility offers the service!  Otherwise don't waste time with processing.
     return nil if !include?("Vehicle Registration")
 
-    #Timestamp the registration
-    #ADD CODE HERE
+    #To consider later: perhaps make method designed to assign date and plate type at once (and get rid of attr_accessor)
     
+    #Timestamp the registration
+    vehicle.registration_date = Date.today
+
     #Determine plate type and collect fees (this of course assumes the registrant has/will pay)
     if vehicle.electric_vehicle?()
       vehicle.plate_type = :ev
