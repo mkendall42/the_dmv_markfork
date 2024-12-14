@@ -69,7 +69,10 @@ class Facility
     # return true if (registrant.age >= 16 && registrant.permit?())
   end
 
-  # def administer_road_test(registrant)
-  # end
+  def administer_road_test(registrant)
+    #Similar structure to administer_written_test (different conditions)
+    #Of course, this assumes the registrant actually passes the test (happy path!)
+    registrant.license_data[:license] = include?("Road Test") && registrant.license_data[:written] == true
+  end
 
 end

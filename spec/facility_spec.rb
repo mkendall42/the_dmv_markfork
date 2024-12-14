@@ -118,4 +118,32 @@ RSpec.describe Facility do
 
   end
 
+  describe '#administer_road_test' do
+    it 'can only administer road test if service provided by facility' do
+      expect(@facility_1.administer_road_test(@registrant_3)).to eq(false)
+      #This part mimics interaction pattern, but isn't necessary since they can't take it regardless (and that has already been tested)
+      @registrant_3.earn_permit()
+      @facility_1.administer_written_test(@registrant_3)
+
+      expect(@facility_1.administer_road_test(@registrant_3)).to eq(false)
+      expect(@registrant_3.license_data[:license]).to eq(false)
+    end
+
+    it 'road test success only for valid registrant, and updates license_data appropriately' do
+      #Remember that the written test must be successfully completed first...
+      @facility_1.add_service("Road Test")
+      @facility_1.add_service("New Drivers License")
+
+      expect(@facility_1.administer_road_test(@registrant_1)).to eq(false)
+
+      @facility_1.administer_written_test(@registrant_1)
+
+      expect(@facility_1.administer_road_test(@registrant_1)).to eq(true)
+      expect(@registrant_1.license_data[:license]).to eq(true)
+    end
+
+
+  end
+
+
 end
