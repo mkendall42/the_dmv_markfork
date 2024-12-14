@@ -14,7 +14,7 @@ class VehicleFactory
     #Should return array of created vehicles
 
     #Registration list is formatted as an array with each element a vehicle, which is a hash of many parameters
-    vehicle_array = []
+    @vehicles_manufactured = []
     
     vehicle_registration_list.each do |vehicle|
       #Build a hash of relevant parameters (vin, make, model, year, engine)
@@ -29,10 +29,10 @@ class VehicleFactory
       }
 
       #'Build' the vehicle:
-      vehicle_array << Vehicle.new(vehicle_data)
+      @vehicles_manufactured << Vehicle.new(vehicle_data)
     end
 
-    return vehicle_array
+    return @vehicles_manufactured
   end
 
 end

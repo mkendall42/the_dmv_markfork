@@ -43,6 +43,7 @@ RSpec.describe VehicleFactory do
       binding.pry
 
       expect(@factory.create_vehicles(@registration_data_list)).to be_a(Array)
+      expect(@factory.create_vehicles(@registration_data_list)).to eq(@factory.vehicles_manufactured)
     end
 
   end
