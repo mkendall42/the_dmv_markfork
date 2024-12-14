@@ -10,6 +10,10 @@ RSpec.describe Facility do
     @bolt = Vehicle.new({vin: '987654321abcdefgh', year: 2019, make: 'Chevrolet', model: 'Bolt', engine: :ev})
     @camaro = Vehicle.new({vin: '1a2b3c4d5e6f', year: 1969, make: 'Chevrolet', model: 'Camaro', engine: :ice})
 
+    @registrant_1 = Registrant.new("Bruce", 18, true)
+    @registrant_2 = Registrant.new("Penny", 16)
+    @registrant_3 = Registrant.new("Tucker", 15)
+
   end
 
   describe '#initialize' do
@@ -72,6 +76,17 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles[1].registration_date).to_not eq(nil)
       expect(@facility_1.registered_vehicles[2].registration_date).to_not eq(nil)
       binding.pry
+    end
+
+  end
+
+  describe '#administer_written_test' do
+    it 'can only administer written test if service provided by facility' do
+      expect(@facility_1.administer_written_test(@registrant_1)).to eq(false)
+      
+      @facility_1.add_service("New Drivers License")
+
+      expect(@facility_1.administer_written_test(@registrant_1)).to eq(true)
     end
 
   end
