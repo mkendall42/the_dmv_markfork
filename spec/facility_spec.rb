@@ -96,6 +96,26 @@ RSpec.describe Facility do
       expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
     end
 
+    it 'updates license information for registrants who can/do complete written exam' do
+      @facility_1.add_service("New Drivers License")
+
+      #Works immediately for registrant 1
+      expect(@facility_1.administer_written_test(@registrant_1)).to eq(true)
+      expect(@registrant_1.license_data[:written]).to eq(true)
+
+      #Works for registrant 2 after they get their permit
+      expect(@facility_1.administer_written_test(@registrant_2)).to eq(false)
+      @registrant_2.earn_permit
+      expect(@facility_1.administer_written_test(@registrant_2)).to eq(true)
+      expect(@registrant_2.license_data[:written]).to eq(true)
+
+      #Cannot work for registrant 3 (at least not until next year)
+      expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
+      @registrant_3.earn_permit
+      expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
+      expect(@registrant_3.license_data[:written]).to eq(false)
+    end
+
   end
 
 end

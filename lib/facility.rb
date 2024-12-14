@@ -51,8 +51,17 @@ class Facility
   end
 
   def administer_written_test(registrant)
+    #Another refactor: I think this is still clear enough
+    registrant.license_data[:written] = include?("New Drivers License") && registrant.age >= 16 && registrant.permit?()
+    
     #Refactor into single line boolean (note that include?() must return 'false' not 'nil' for no find)
-    return include?("New Drivers License") && registrant.age >= 16 && registrant.permit?()
+    # if include?("New Drivers License") && registrant.age >= 16 && registrant.permit?()
+    #   #Also need to update registrant's data in this case:
+    #   registrant.license_data[:written] = true
+    #   return true
+    # else
+    #   return false
+    # end
 
     # #Verify it can be administered here
     # return false if !include?("New Drivers License") ||        #nil vs false?
