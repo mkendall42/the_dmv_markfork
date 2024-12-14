@@ -1,4 +1,5 @@
 require 'spec_helper'
+require './lib/registrant.rb'       #May move this to helper file later...
 require 'pry'
 
 RSpec.describe Facility do
@@ -75,7 +76,6 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles[0].registration_date).to_not eq(nil)
       expect(@facility_1.registered_vehicles[1].registration_date).to_not eq(nil)
       expect(@facility_1.registered_vehicles[2].registration_date).to_not eq(nil)
-      binding.pry
     end
 
   end
@@ -87,6 +87,13 @@ RSpec.describe Facility do
       @facility_1.add_service("New Drivers License")
 
       expect(@facility_1.administer_written_test(@registrant_1)).to eq(true)
+    end
+
+    it 'cannot administer written test if registrant does not meet requirements' do
+      @facility_1.add_service("New Drivers License")
+
+      expect(@facility_1.administer_written_test(@registrant_2)).to eq(false)
+      expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
     end
 
   end

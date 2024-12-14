@@ -20,7 +20,8 @@ class Facility
 
   def include?(service_specified)
     #Check to see if this facility provides this service
-    @services.find { |service| service == service_specified }
+    #NOTE: find must return 'false' if nothing found to play nice with methods accessing it
+    @services.find(proc {false}) { |service| service == service_specified }
   end
 
   #Facility services
@@ -50,12 +51,13 @@ class Facility
   end
 
   def administer_written_test(registrant)
-    #Verify it can be administered here
-    return false if !include?("New Drivers License")        #nil vs false?
+    #Refactor into single line boolean (note that include?() must return 'false' not 'nil' for no find)
+    return include?("New Drivers License") && registrant.age >= 16 && registrant.permit?()
 
-
-
-
+    # #Verify it can be administered here
+    # return false if !include?("New Drivers License") ||        #nil vs false?
+    # #Verify registrant meets requirements
+    # return true if (registrant.age >= 16 && registrant.permit?())
   end
 
   # def administer_road_test(registrant)
