@@ -2,6 +2,7 @@
 
 class Facility
   attr_reader :name, :address, :phone, :services, :collected_fees, :registered_vehicles
+  @@fee_chart = {ev: 200, antique: 25, regular: 100}      #Can use again and again (class var, not instance var)
 
   def initialize(facility_info)    #Accepts a hash as argument
     @name = facility_info[:name]
@@ -24,8 +25,25 @@ class Facility
 
   #Next: register_vehicle(arg)
   def register_vehicle(vehicle)
-    #Only register the vehicle if this facility offers the service!
-    @registered_vehicles << vehicle if include?("Vehicle Registration")
+    #Only register the vehicle if this facility offers the service!  Otherwise don't waste time with process.
+    return nil if !include?("Vehicle Registration")
+
+    #Timestamp the registration
+    #ADD CODE HERE
+    
+    #Determine plate type and collect fees (this of course assumes the registrant has/will pay)
+    if vehicle.electric_vehicle?()
+      vehicle.plate_type = :ev
+      @collected_fees += @@fee_chart[:ev]
+    elsif vehicle.antique?()
+      vehicle.plate_type = :antique
+      @collected_fees += @@fee_chart[:antique]
+    else
+      vehicle.plate_type = :regular
+      @collected_fees += @@fee_chart[:regular]
+    end
+
+    @registered_vehicles << vehicle
   end
 
 end

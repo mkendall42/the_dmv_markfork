@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 RSpec.describe Facility do
   before(:each) do
@@ -38,7 +39,7 @@ RSpec.describe Facility do
     end
   end
 
-  describe '#verify services' do
+  describe '#register_vehicle' do
     it 'can register vehicles' do
       @facility_1.add_service('Vehicle Registration')
       @facility_1.register_vehicle(@cruz)
@@ -54,6 +55,24 @@ RSpec.describe Facility do
 
       expect(@facility_1.registered_vehicles).to eq([])
     end
+
+    it 'collects fee and assigns plate appropriately' do
+      @facility_1.add_service('Vehicle Registration')
+
+      @facility_1.register_vehicle(@cruz)
+      @facility_1.register_vehicle(@bolt)
+      @facility_1.register_vehicle(@camaro)
+
+      #Oof, this is a lot, but needed to exahustively test possible cases:
+      expect(@facility_1.collected_fees).to eq(325)
+      expect(@facility_1.registered_vehicles[0].plate_type).to eq(:regular)
+      expect(@facility_1.registered_vehicles[1].plate_type).to eq(:ev)
+      expect(@facility_1.registered_vehicles[2].plate_type).to eq(:antique)
+      # expect(@facility_1.registered_vehicles[0].registration_date).to_not eq(nil)
+      # expect(@facility_1.registered_vehicles[1].registration_date).to_not eq(nil)
+      # expect(@facility_1.registered_vehicles[2].registration_date).to_not eq(nil)
+    end
+
   end
 
 end
