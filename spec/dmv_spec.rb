@@ -40,4 +40,15 @@ RSpec.describe Dmv do
       expect(@dmv.facilities_offering_service('Road Test')).to eq([@facility_2, @facility_3])
     end
   end
+
+  describe '#create_state_facilities' do
+    it 'can create facilities array for Colorado' do
+      colorado_facilities = DmvDataService.new.co_dmv_office_locations()
+      @dmv.create_state_facilities("Colorado")
+
+      #Basic checks first
+      expect(@dmv.facilities).to be_a(Array)
+      expect(@dmv.facilities).to_not eq([])
+    end
+  end
 end
