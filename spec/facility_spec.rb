@@ -14,7 +14,6 @@ RSpec.describe Facility do
     @registrant_1 = Registrant.new("Bruce", 18, true)
     @registrant_2 = Registrant.new("Penny", 16)
     @registrant_3 = Registrant.new("Tucker", 15)
-
   end
 
   describe '#initialize' do
@@ -141,7 +140,40 @@ RSpec.describe Facility do
       expect(@facility_1.administer_road_test(@registrant_1)).to eq(true)
       expect(@registrant_1.license_data[:license]).to eq(true)
     end
+  end
 
+  describe '#renew_drivers_license' do
+    it 'can only renew license if service provided by facility' do
+      expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(false)
+
+      @facility_1.add_service("Road Test")
+      @facility_1.add_service("New Drivers License")
+      @facility_1.add_service("Written Test")
+      @facility_1.add_service("Renew License")
+
+      expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(false)
+
+      #Registrant must already have a license to do this.
+      #Bad practice to manually set that, so use methods how one would actually do it:
+      @facility_1.administer_written_test(@registrant_1)
+      @facility_1.administer_road_test(@registrant_1)
+
+      expect(@facility_1.renew_drivers_license(@registrant_3)).to eq(false)
+    end
+
+    it 'properly sets all appropriate registrant license information' do
+      @facility_1.add_service("Road Test")
+      @facility_1.add_service("New Drivers License")
+      @facility_1.add_service("Written Test")
+      @facility_1.add_service("Renew License")
+
+      @facility_1.administer_written_test(@registrant_1)
+      @facility_1.administer_road_test(@registrant_1)
+      @facility_1.renew_drivers_license(@registrant_1)
+
+      max_upgrades_hash = {written: true, license: true, renewed: true}
+      expect(@registrant_1.license_data).to eq(max_upgrades_hash)
+    end
 
   end
 
