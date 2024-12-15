@@ -1,4 +1,8 @@
 #Class appears to track DMV facilities and services offered to customers
+#UPDATE: I can use this to create (via API) all facilities and track / gather additional information
+
+#Will need to create and add_facilities_by_state or similar
+#Probably will need to update initialize() as well
 
 class Dmv
   attr_reader :facilities
@@ -15,5 +19,107 @@ class Dmv
     @facilities.find_all do |facility|
       facility.services.include?(service)
     end
+  end
+
+  def create_state_facilities(state, facilities_incoming_data)
+    #Each state may have different API, and so we need a 'dispatching' method here
+    #FOR NOW: just code this for Colorado, then can break it out from there for addt'l states
+    #Also coded for NY and MO (that's all for this project)
+    if state == "Colorado"
+      facilities_incoming_data.each do |facility|
+        facility_info = {
+          name: facility[:dmv_office],
+          address: "#{facility[:address_li]} #{facility[:address__1]} #{facility[:location]} #{facility[:city]} #{facility[:state]} #{facility[:zip]}",
+          phone: facility[:phone]
+        }
+
+        #Create facility
+        new_facility = Facility.new(facility_info)
+        add_facility(new_facility)
+
+        #Now add services (to stay with spirit of preexisting codebase - even though they abandoned us!)
+        #Need to convert API's listing of services to our format.  Don't think there's a cleaner way to do this than a use of 'case' or similar:
+        #Can either grab the next 'token' and analyze, or search for specific terms;
+        #I'll go with latter option for now
+        new_facility.add_service("New Drivers License") if facility[:services_p].include?("registration")
+        new_facility.add_service("Renew Drivers License") if facility[:services_p].include?("renew")
+        #NOTE: they don't seem to have granularity in their services regarding tests;
+        #so, I'm going to assume they offer them by default.  CHECK THIS ASSUMPTION
+        new_facility.add_service("Written Test")
+        new_facility.add_service("Road Test")
+      end
+
+    end
+
+    #Better (refactor later): write a fetcher function that depends on state - that's the only thing that really changes here...
+    #Well, there could be issues with services as well...we'll see...
+    if state == "New York"
+      facilities_incoming_data.each do |facility|
+        #Pre-determine name, since this one is nasty, have to concatenate and then 'fix' capitlization the hard way (since each word is capitalized for a title usually)
+        name_formatted = facility[:office_name].split.map { |word| word.capitalize }
+        name_formatted << (facility[:office_type].split.map { |word| word.capitalize }).join(" ")
+        name_formatted = name_formatted.join(" ")
+
+        #Fuck this, I might write a helper method to just capitalize each word.
+        #I guess it will live in this class since it's not used anywhere else for this project
+        #(a case where OOO is kinda weird / less 'aligned')
+        #This could be tricky, though, because it needs to accept an arbitrary number of arguments (maybe pass the hash keys as symbols?).  Don't know how to do this yet...
+        address_formatted = facility[:street_address_line_1].split.map { |word| word.capitalize }
+        address_formatted << facility[:city].split.map { |word| word.capitalize }
+        address_formatted << facility[:state]
+        address_formatted << facility[:zip_code]
+        address_formatted = address_formatted.join(" ")
+
+        #Some of the branches don't seem to have phone numbers...make sure to process 'nil' correctly here
+        #Also, trying to keep this consistently formatted between states
+        phone = facility[:public_phone_number]
+        if phone != nil
+          phone_formatted = "(" + phone.slice(0, 3) + ") " + phone.slice(3, 3) + "-" + phone.slice(6, 4)
+        end
+
+        facility_info = {
+          name: name_formatted,
+          address: address_formatted,
+          phone: phone_formatted
+        }
+
+        #Create facility
+        new_facility = Facility.new(facility_info)
+        add_facility(new_facility)
+
+        #Add services: NOTE - NY office API does NOT return these.
+        #I will assume ALL services are offered (is this ok?)
+        new_facility.add_service("New Drivers License")
+        new_facility.add_service("Renew Drivers License")
+        new_facility.add_service("Written Test")
+        new_facility.add_service("Road Test")
+      end
+    end
+
+    if state == "Missouri"
+      facilities_incoming_data.each do |facility|
+        address_formatted = facility[:address1].delete_suffix(",")      #Certain (random?) entries end with it for some reason
+        address_formatted = "#{address_formatted} #{facility[:city]} #{facility[:state]} #{facility[:zipcode]}"
+
+        facility_info = {
+          name: facility[:name] + " Office",       #To be as consistent with other states as possible
+          address: address_formatted,
+          phone: facility[:phone]
+        }
+
+        #Create facility
+        new_facility = Facility.new(facility_info)
+        add_facility(new_facility)
+
+        #Add services: NOTE - MO office API does NOT return these.
+        #I will assume ALL services are offered (is this ok?)
+        new_facility.add_service("New Drivers License")
+        new_facility.add_service("Renew Drivers License")
+        new_facility.add_service("Written Test")
+        new_facility.add_service("Road Test")
+      end
+
+    end
+
   end
 end

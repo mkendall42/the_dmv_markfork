@@ -40,4 +40,55 @@ RSpec.describe Dmv do
       expect(@dmv.facilities_offering_service('Road Test')).to eq([@facility_2, @facility_3])
     end
   end
+
+  describe '#create_state_facilities' do
+    it 'can create default facilities array for Colorado' do
+      colorado_facilities = DmvDataService.new.co_dmv_office_locations()
+      @dmv.create_state_facilities("Colorado", colorado_facilities)
+
+      #Basic checks first
+      expect(@dmv.facilities).to be_a(Array)
+      expect(@dmv.facilities).to_not eq([])
+    end
+
+    it 'correctly create facilities array for Colorado based on API data' do
+      colorado_facilities = DmvDataService.new.co_dmv_office_locations()
+      @dmv.create_state_facilities("Colorado", colorado_facilities)
+
+      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
+      #Don't really know how to make it 'time-proof' in that sense...
+      expect(@dmv.facilities[0].name).to eq("DMV Tremont Branch")
+      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
+      expect(@dmv.facilities[1].address).to eq("4685 Peoria Street Suite 101 Arie P. Taylor  Municipal Bldg Denver CO 80239")
+      expect(@dmv.facilities[2].phone).to eq("(720) 865-4600")
+      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+    end
+
+    it 'correctly create facilities array for New York based on API data' do
+      newyork_facilities = DmvDataService.new.ny_dmv_office_locations()
+      @dmv.create_state_facilities("New York", newyork_facilities)
+
+      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
+      #Don't really know how to make it 'time-proof' in that sense...
+      expect(@dmv.facilities[0].name).to eq("Lake Placid County Office")
+      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
+      expect(@dmv.facilities[1].address).to eq("560 Warren Street Hudson NY 12534")
+      expect(@dmv.facilities[3].phone).to eq("(718) 966-6155")
+      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+    end
+
+    it 'correctly create facilities array for Missouri based on API data' do
+      missouri_facilities = DmvDataService.new.mo_dmv_office_locations()
+      @dmv.create_state_facilities("Missouri", missouri_facilities)
+
+      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
+      #Don't really know how to make it 'time-proof' in that sense...
+      expect(@dmv.facilities[0].name).to eq("Harrisonville Office")
+      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
+      expect(@dmv.facilities[1].address).to eq("108 N Monroe Versailles MO 65084")
+      expect(@dmv.facilities[2].phone).to eq("(417) 334-2496")
+      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+    end
+
+  end
 end
