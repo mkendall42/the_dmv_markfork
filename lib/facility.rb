@@ -1,7 +1,7 @@
 #This clearly tracks a specific DMV facility's core information and serviced rendered (or perhaps I should say """"""services""""""")
 
 class Facility
-  attr_reader :name, :address, :phone, :services, :collected_fees, :registered_vehicles
+  attr_reader :name, :address, :phone, :services, :collected_fees, :registered_vehicles, :state
   @@fee_chart = {ev: 200, antique: 25, regular: 100}      #Can use again and again (class var, not instance var)
 
   def initialize(facility_info)    #Accepts a hash as argument
@@ -12,6 +12,8 @@ class Facility
     #Added in iteration 2
     @collected_fees = 0
     @registered_vehicles = []
+    #Added in iteration 4 (for by-state searching).  Default is nil, if not specified (backwards compatible methinks)
+    @state = facility_info[:state]
   end
 
   def add_service(service)

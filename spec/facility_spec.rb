@@ -31,6 +31,14 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles).to eq([])
     end
 
+    it 'can initialize with state specified' do
+      expect(@facility_1.state).to eq(nil)
+
+      facility_4 = Facility.new({name: 'DMV Made-up Branch', address: '3698 W. 44th Avenue Denver CO 80211', phone: '(720) 865-4600', state: "Wyoming"})
+
+      expect(facility_4.state).to eq("Wyoming")
+    end
+
   end
 
   describe '#add service' do
