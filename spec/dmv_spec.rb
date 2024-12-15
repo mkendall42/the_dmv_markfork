@@ -83,11 +83,11 @@ RSpec.describe Dmv do
 
       #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
       #Don't really know how to make it 'time-proof' in that sense...
-      # expect(@dmv.facilities[0].name).to eq("Lake Placid County Office")
+      expect(@dmv.facilities[0].name).to eq("Harrisonville Office")
       #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
-      # expect(@dmv.facilities[1].address).to eq("560 Warren Street Hudson NY 12534")
-      # expect(@dmv.facilities[3].phone).to eq("(718) 966-6155")
-      # expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+      expect(@dmv.facilities[1].address).to eq("108 N Monroe Versailles MO 65084")
+      expect(@dmv.facilities[2].phone).to eq("(417) 334-2496")
+      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
     end
 
   end

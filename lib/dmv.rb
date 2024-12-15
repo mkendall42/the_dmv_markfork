@@ -24,15 +24,7 @@ class Dmv
   def create_state_facilities(state, facilities_incoming_data)
     #Each state may have different API, and so we need a 'dispatching' method here
     #FOR NOW: just code this for Colorado, then can break it out from there for addt'l states
-    
-    # #Need to extract the following information:
-    # @name = facility_info[:name]
-    # @address = facility_info[:address]    #Gotta concatenate all of this too...ugh...
-    # @phone = facility_info[:phone]
-    # @services = []
-    # #Added in iteration 2
-    # @collected_fees = 0
-    # @registered_vehicles = []
+    #Also coded for NY and MO (that's all for this project)
     if state == "Colorado"
       facilities_incoming_data.each do |facility|
         facility_info = {
@@ -106,12 +98,6 @@ class Dmv
 
     if state == "Missouri"
       facilities_incoming_data.each do |facility|
-        #Pre-determine name, since this one is nasty, have to concatenate and then 'fix' capitlization the hard way (since each word is capitalized for a title usually)
-        
-        #Fuck this, I might write a helper method to just capitalize each word.
-        #I guess it will live in this class since it's not used anywhere else for this project
-        #(a case where OOO is kinda weird / less 'aligned')
-        #This could be tricky, though, because it needs to accept an arbitrary number of arguments (maybe pass the hash keys as symbols?).  Don't know how to do this yet...
         address_formatted = facility[:address1].delete_suffix(",")      #Certain (random?) entries end with it for some reason
         address_formatted = "#{address_formatted} #{facility[:city]} #{facility[:state]} #{facility[:zipcode]}"
 
