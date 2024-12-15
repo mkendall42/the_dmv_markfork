@@ -59,10 +59,54 @@ class Dmv
 
     end
 
-    #Just to pass initial test (super hacky for now) - just checking basic setup
-    # if(state == "Colorado")
-    #   @facilities = [1, 2]
-    # end
+    #Better (refactor later): write a fetcher function that depends on state - that's the only thing that really changes here...
+    #Well, there could be issues with services as well...we'll see...
+    if state == "New York"
+      facilities_incoming_data.each do |facility|
+        #Pre-determine name, since this one is nasty, have to concatenate and then 'fix' capitlization the hard way (since each word is capitalized for a title usually)
+        name_formatted = facility[:office_name].split.map { |word| word.capitalize }
+        name_formatted << facility[:office_type].split.map { |word| word.capitalize }
+        name_formatted.join(" ")
+
+        #Fuck this, I'm writing a helper method to just capitalize each word.
+        #I guess it will live in this class since it's not used anywhere else for this project
+        #(a case where OOO is kinda weird / less 'aligned')
+        #This could be tricky, though, because it needs to accept an arbitrary number of arguments (maybe pass the hash keys as symbols?).  Don't know how to do this yet...
+        address_formatted = facility[:street_address_line_1].split.map { |word| word.capitalize }
+        address_formatted << facility[:city].split.map { |word| word.capitalize }
+        address_formatted << facility[:state]
+        address_formatted << facility[:zip_code]
+        address_formatted.join(" ")
+
+        #Some of the branches don't seem to have phone numbers...make sure to process 'nil' correctly here
+        if facility[:public_phone_number] != nil
+          
+
+        
+
+
+        facility_info = {
+          name: name_formatted
+          # address: "#{facility[:address_li]} #{facility[:address__1]} #{facility[:location]} #{facility[:city]} #{facility[:state]} #{facility[:zip]}",
+          # phone: facility[:phone]
+        }
+
+        #Create facility
+        new_facility = Facility.new(facility_info)
+        add_facility(new_facility)
+
+        #Now add services (to stay with spirit of preexisting codebase - even though they abandoned us!)
+        #Need to convert API's listing of services to our format.  Don't think there's a cleaner way to do this than a use of 'case' or similar:
+        #Can either grab the next 'token' and analyze, or search for specific terms;
+        #I'll go with latter option for now
+        new_facility.add_service("New Drivers License") if facility[:services_p].include?("registration")
+        new_facility.add_service("Renew Drivers License") if facility[:services_p].include?("renew")
+        #NOTE: they don't seem to have granularity in their services regarding tests;
+        #so, I'm going to assume they offer them by default.  CHECK THIS ASSUMPTION
+        new_facility.add_service("Written Test")
+        new_facility.add_service("Road Test")
+      end
+    end
 
   end
 end
