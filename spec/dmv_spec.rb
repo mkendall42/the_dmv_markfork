@@ -44,7 +44,7 @@ RSpec.describe Dmv do
   describe '#create_state_facilities' do
     it 'can create default facilities array for Colorado' do
       colorado_facilities = DmvDataService.new.co_dmv_office_locations()
-      @dmv.create_state_facilities("Colorado")
+      @dmv.create_state_facilities("Colorado", colorado_facilities)
 
       #Basic checks first
       expect(@dmv.facilities).to be_a(Array)
@@ -53,12 +53,13 @@ RSpec.describe Dmv do
 
     it 'correctly create facilities array for Colorado based on API data' do
       colorado_facilities = DmvDataService.new.co_dmv_office_locations()
-      @dmv.create_state_facilities("Colorado")
+      @dmv.create_state_facilities("Colorado", colorado_facilities)
 
       #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
       #Don't really know how to make it 'time-proof' in that sense...
       expect(@dmv.facilities[0].name).to eq("DMV Tremont Branch")
-      expect(@dmv.facilities[1].address).to eq("4685 Peoria Street Suite 101 Aire P.  Taylor Municipal Building Denver CO 80239")
+      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
+      expect(@dmv.facilities[1].address).to eq("4685 Peoria Street Suite 101 Arie P. Taylor  Municipal Bldg Denver CO 80239")
       expect(@dmv.facilities[2].phone).to eq("(720) 865-4600")
       expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
     end

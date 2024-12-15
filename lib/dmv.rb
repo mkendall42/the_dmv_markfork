@@ -37,7 +37,7 @@ class Dmv
       facilities_incoming_data.each do |facility|
         facility_info = {
           name: facility[:dmv_office],
-          address: "#{facility[:address_li]} #{facility[:address_1]} #{facility[:city]} #{facility[:state]} #{facility[:zip]}",
+          address: "#{facility[:address_li]} #{facility[:address__1]} #{facility[:location]} #{facility[:city]} #{facility[:state]} #{facility[:zip]}",
           phone: facility[:phone]
         }
 
