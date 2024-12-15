@@ -104,5 +104,36 @@ class Dmv
       end
     end
 
+    if state == "Missouri"
+      facilities_incoming_data.each do |facility|
+        #Pre-determine name, since this one is nasty, have to concatenate and then 'fix' capitlization the hard way (since each word is capitalized for a title usually)
+        
+        #Fuck this, I might write a helper method to just capitalize each word.
+        #I guess it will live in this class since it's not used anywhere else for this project
+        #(a case where OOO is kinda weird / less 'aligned')
+        #This could be tricky, though, because it needs to accept an arbitrary number of arguments (maybe pass the hash keys as symbols?).  Don't know how to do this yet...
+        address_formatted = facility[:address1].delete_suffix(",")      #Certain (random?) entries end with it for some reason
+        address_formatted = "#{address_formatted} #{facility[:city]} #{facility[:state]} #{facility[:zipcode]}"
+
+        facility_info = {
+          name: facility[:name] + " Office",       #To be as consistent with other states as possible
+          address: address_formatted,
+          phone: facility[:phone]
+        }
+
+        #Create facility
+        new_facility = Facility.new(facility_info)
+        add_facility(new_facility)
+
+        #Add services: NOTE - MO office API does NOT return these.
+        #I will assume ALL services are offered (is this ok?)
+        new_facility.add_service("New Drivers License")
+        new_facility.add_service("Renew Drivers License")
+        new_facility.add_service("Written Test")
+        new_facility.add_service("Road Test")
+      end
+
+    end
+
   end
 end

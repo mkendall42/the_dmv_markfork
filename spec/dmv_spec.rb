@@ -76,5 +76,19 @@ RSpec.describe Dmv do
       expect(@dmv.facilities[3].phone).to eq("(718) 966-6155")
       expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
     end
+
+    it 'correctly create facilities array for Missouri based on API data' do
+      missouri_facilities = DmvDataService.new.mo_dmv_office_locations()
+      @dmv.create_state_facilities("Missouri", missouri_facilities)
+
+      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
+      #Don't really know how to make it 'time-proof' in that sense...
+      # expect(@dmv.facilities[0].name).to eq("Lake Placid County Office")
+      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
+      # expect(@dmv.facilities[1].address).to eq("560 Warren Street Hudson NY 12534")
+      # expect(@dmv.facilities[3].phone).to eq("(718) 966-6155")
+      # expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+    end
+
   end
 end
