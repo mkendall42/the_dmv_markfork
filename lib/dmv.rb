@@ -122,4 +122,11 @@ class Dmv
     end
 
   end
+
+  def get_ev_registration_analytics(state, specified_year)
+    #Determine most popular make/model registered, the # registered for specified year, and the county with most registered vehicles
+    #Return as a hash (then helper methods can e.g. access or print part of it)
+
+    return {most_popular_model: "Corolla", number_registered_for_year: 42, county_most_registered_vehicles: "Linn"}
+  end
 end

@@ -89,6 +89,12 @@ RSpec.describe Dmv do
       expect(@dmv.facilities[2].phone).to eq("(417) 334-2496")
       expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
     end
-
   end
+
+  describe '#get_ev_registration_analytics()' do
+    it 'can retun appropriate data structure' do
+      expect(@dmv.get_ev_registration_analytics("Washington", 2019)).to be_a(Hash)
+    end
+  end
+
 end
