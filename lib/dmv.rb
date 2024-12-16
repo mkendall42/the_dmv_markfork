@@ -194,10 +194,16 @@ class Dmv
     @facilities.each do |facility|
       facility.registered_vehicles.each do |vehicle|
         #Access vehicle's registration county here and add to tally hash
+        if county_tally.include?(vehicle.registration_county)      #Assume just 'model' is enough (i.e. its unique and not make + model is needed)
+          county_tally[vehicle.registration_county] += 1           #Forgot to make this 'vehicle.model' for a while...was driving me crazy!
+        else
+          county_tally[vehicle.registration_county] = 1
+        end
       end
     end
+    most_popular_county = county_tally.key(county_tally.values.max)
 
-    return {most_popular_model: most_popular_model, number_registered_for_year: vehicle_year_total, county_most_registered_vehicles: "Linn"}
+    return {most_popular_model: most_popular_model, number_registered_for_year: vehicle_year_total, county_most_registered_vehicles: most_popular_county}
   end
 
 end

@@ -152,10 +152,8 @@ RSpec.describe Dmv do
       #Need to have additional instance variable in Vehicle class to track county registered.
       #Alternate would be deducing this from the facility it gets registered to, but we'd need a lookup function for zip code / similar
       #(beyond the scope of this project at this point...)
-
-
-      # hash = @dmv.get_ev_registration_analytics("Washington", 2019)
-      # expect(hash[:number_registered_for_year]).to eq(VALUE GOES HERE)
+      hash = @dmv.get_ev_registration_analytics("Washington", 2019)
+      expect(hash[:county_most_registered_vehicles]).to eq("King")    #Again, depends on served dataset staying the same...
     end
 
   end
