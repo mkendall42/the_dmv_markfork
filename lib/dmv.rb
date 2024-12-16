@@ -180,4 +180,5 @@ class Dmv
 
     return {most_popular_model: most_popular_model, number_registered_for_year: 42, county_most_registered_vehicles: "Linn"}
   end
+  
 end

@@ -97,7 +97,7 @@ RSpec.describe Dmv do
       expect(@dmv.get_ev_registration_analytics("Washington", 2019)).to be_a(Hash)
     end
 
-    it '(intermediate) can generate hash of vehicle model occurences counts' do
+    it 'can generate hash with correct msot popular vehicle model' do
       #First, we need to build the vehicle regitration list and 'make' the vehicles (kept forgetting to do this!)
       factory = VehicleFactory.new()
       factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
@@ -119,8 +119,21 @@ RSpec.describe Dmv do
       #Finally, let's look at the analytics:
 
       hash = @dmv.get_ev_registration_analytics("Washington", 2019)
+      expect(hash[:most_popular_model]).to eq("Model 3")              #Based off of CURRENT data...could someday change
+    end
 
-      binding.pry
+    it 'can generate hash with correct # of registrations for specified year' do
+      #Create the same machinery as in previous test in order to have everything set up correctly...
+      factory = VehicleFactory.new()
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
+      @facility_1.add_service("Vehicle Registration")
+      factory.vehicles_manufactured.each do |vehicle|
+        @facility_1.register_vehicle(vehicle)
+      end
+      @dmv.add_facility(@facility_1)
+
+      hash = @dmv.get_ev_registration_analytics("Washington", 2019)
+      expect(hash[:number_registered_for_year]).to eq(VALUE GOES HERE)
     end
   end
 
