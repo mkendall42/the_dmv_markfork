@@ -139,19 +139,24 @@ RSpec.describe Dmv do
       expect(hash_2024[:number_registered_for_year]).to eq(@facility_1.registered_vehicles.length)
     end
 
-    # it 'can generate hash with correct # of registrations for specified year' do
-    #   #Create the same machinery as in previous test in order to have everything set up correctly...
-    #   factory = VehicleFactory.new()
-    #   factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
-    #   @facility_1.add_service("Vehicle Registration")
-    #   factory.vehicles_manufactured.each do |vehicle|
-    #     @facility_1.register_vehicle(vehicle)
-    #   end
-    #   @dmv.add_facility(@facility_1)
+    it 'can generate hash with correct most common county registered' do
+      #Create the same machinery as in previous tests in order to have everything set up correctly...
+      factory = VehicleFactory.new()
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
+      @facility_1.add_service("Vehicle Registration")
+      factory.vehicles_manufactured.each do |vehicle|
+        @facility_1.register_vehicle(vehicle)
+      end
+      @dmv.add_facility(@facility_1)
 
-    #   hash = @dmv.get_ev_registration_analytics("Washington", 2019)
-    #   expect(hash[:number_registered_for_year]).to eq(VALUE GOES HERE)
-    # end
+      #Need to have additional instance variable in Vehicle class to track county registered.
+      #Alternate would be deducing this from the facility it gets registered to, but we'd need a lookup function for zip code / similar
+      #(beyond the scope of this project at this point...)
+
+
+      # hash = @dmv.get_ev_registration_analytics("Washington", 2019)
+      # expect(hash[:number_registered_for_year]).to eq(VALUE GOES HERE)
+    end
 
   end
 

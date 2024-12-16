@@ -188,6 +188,15 @@ class Dmv
       end
     end
 
+    #Find county (in WA) which has the most vehicle registrations.
+    #Very similar machinery to the first part above.  See if it's possible to refactor to combine these later?  (Would need fancier hash at least...)
+    county_tally = {}
+    @facilities.each do |facility|
+      facility.registered_vehicles.each do |vehicle|
+        #Access vehicle's registration county here and add to tally hash
+      end
+    end
+
     return {most_popular_model: most_popular_model, number_registered_for_year: vehicle_year_total, county_most_registered_vehicles: "Linn"}
   end
 
