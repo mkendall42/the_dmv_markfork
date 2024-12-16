@@ -1,6 +1,8 @@
 #Class appears to track DMV facilities and services offered to customers
 #UPDATE: I can use this to create (via API) all facilities and track / gather additional information
 
+require 'pry'
+
 #Will need to create and add_facilities_by_state or similar
 #Probably will need to update initialize() as well
 
@@ -127,6 +129,55 @@ class Dmv
     #Determine most popular make/model registered, the # registered for specified year, and the county with most registered vehicles
     #Return as a hash (then helper methods can e.g. access or print part of it)
 
-    return {most_popular_model: "Corolla", number_registered_for_year: 42, county_most_registered_vehicles: "Linn"}
+    #Most popular make/model: iterate through all vehicles with all facilities
+    #Need to make a new 2D array, or a hash, that tracks model and count -> and keeps only unique entries (assume happy path that models' strings are formatted the same)
+    #This took a while to get working...in part owing to having to get everything set up correctly in the test...
+    vehicle_tally = {}
+    @facilities.each do |facility|
+      facility.registered_vehicles.each do |vehicle|
+        # binding.pry
+
+        if vehicle_tally.include?(vehicle.model)      #Assume just 'model' is enough (i.e. its unique and not make + model is needed)
+          vehicle_tally[vehicle.model] += 1           #Forgot to make this 'vehicle.model' for a while...was driving me crazy!
+        else
+          vehicle_tally[vehicle.model] = 1
+        end
+      end
+    end
+
+    #Now find the largest count in the hash:
+    #I think I need to run the max() enumerable on the values list (counts), then lookup the corresponding key (model):
+    most_popular_model = vehicle_tally.key(vehicle_tally.values.max)
+    # max_count = vehicle_tally.max 
+
+    #Practice: start with array.  Find occurence of each value.
+    # array = [1, 2, 6, 5, 9, 1, 9, 4, 2, 5, 9]
+    # values_hash = {}
+    # array.each do |element|
+    #   #For each element in the array, check to see if it exists in the hash.  If so, update; if not, add at it the end.
+    #   number = values_hash.find do |number_key, count|
+    #     number_key == element
+    #   end
+    #   if number == nil
+    #     values_hash[element] = 1
+    #   else
+    #     values_hash[element] += 1
+    #   end
+    # end
+    # #Practice, more compact.  Don't need the .find enumerable, really...
+    # array = [1, 2, 6, 5, 9, 1, 9, 4, 2, 5, 9]
+    # values_hash = {}
+    # array.each do |element|
+    #   if values_hash.include?(element)
+    #     values_hash[element] += 1
+    #   else
+    #     values_hash[element] = 1
+    #   end
+    # end
+
+    #This will find if the entry already exists in the hash:
+    # number = vehicle_tally.find { |model, count| vehicle[:model] == vehicle }
+
+    return {most_popular_model: most_popular_model, number_registered_for_year: 42, county_most_registered_vehicles: "Linn"}
   end
 end

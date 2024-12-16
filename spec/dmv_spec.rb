@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 RSpec.describe Dmv do
   before(:each) do
@@ -94,6 +95,32 @@ RSpec.describe Dmv do
   describe '#get_ev_registration_analytics()' do
     it 'can retun appropriate data structure' do
       expect(@dmv.get_ev_registration_analytics("Washington", 2019)).to be_a(Hash)
+    end
+
+    it '(intermediate) can generate hash of vehicle model occurences counts' do
+      #First, we need to build the vehicle regitration list and 'make' the vehicles (kept forgetting to do this!)
+      factory = VehicleFactory.new()
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
+
+      #Now we need to register the vehicles to one or more facilities (keep it one / simple for the moment)
+      #NOTE: the facility needs to have the appropriate service enabled (ARRRGH)!
+      @facility_1.add_service("Vehicle Registration")
+
+      factory.vehicles_manufactured.each do |vehicle|
+        # binding.pry
+        @facility_1.register_vehicle(vehicle)
+      end
+
+      #Associate the facility with the DMV:
+      @dmv.add_facility(@facility_1)
+
+      # binding.pry
+
+      #Finally, let's look at the analytics:
+
+      hash = @dmv.get_ev_registration_analytics("Washington", 2019)
+
+      binding.pry
     end
   end
 
