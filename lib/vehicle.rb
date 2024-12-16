@@ -7,12 +7,13 @@ class Vehicle
               :year,
               :make,
               :model,
-              :engine
+              :engine,
+              :registration_county
               # :registration_date,
               # :plate_type
   attr_accessor :registration_date, :plate_type
 
-  def initialize(vehicle_details)         #Extract all data from a hash
+  def initialize(vehicle_details)         #Extract all data from a hash (some details are optional)
     @vin = vehicle_details[:vin]
     @year = vehicle_details[:year]
     @make = vehicle_details[:make]
@@ -23,8 +24,7 @@ class Vehicle
     #Maybe make a registration_data hash to keep as one unit?
     #For now, I WON'T do this, given the interaction pattern we're suppost to mimic...
     @plate_type = nil
-    # @is_registered = false          #Can deduce this from @registration_date I guess
-
+    @registration_county = vehicle_details[:county]
   end
 
   def antique?
