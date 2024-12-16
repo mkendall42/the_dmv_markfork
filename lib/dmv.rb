@@ -178,7 +178,17 @@ class Dmv
     #This will find if the entry already exists in the hash:
     # number = vehicle_tally.find { |model, count| vehicle[:model] == vehicle }
 
-    return {most_popular_model: most_popular_model, number_registered_for_year: 42, county_most_registered_vehicles: "Linn"}
+    #Count number of occurences of given registration year in vehicle list
+    #I wonder if there are occasionally shortcuts for nested iterations...
+    vehicle_year_total = 0            #Define now for scope
+    @facilities.each do |facility|
+      # facility.registered_vehicles.count(vehicle_to_check.registration_date.year)
+      vehicle_year_total += facility.registered_vehicles.count do |vehicle|
+        vehicle.registration_date.year == specified_year
+      end
+    end
+
+    return {most_popular_model: most_popular_model, number_registered_for_year: vehicle_year_total, county_most_registered_vehicles: "Linn"}
   end
-  
+
 end

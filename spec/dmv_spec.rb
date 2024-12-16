@@ -132,9 +132,27 @@ RSpec.describe Dmv do
       end
       @dmv.add_facility(@facility_1)
 
-      hash = @dmv.get_ev_registration_analytics("Washington", 2019)
-      expect(hash[:number_registered_for_year]).to eq(VALUE GOES HERE)
+      #Because we're manually registering them now, all of them should be for 2024
+      hash_2019 = @dmv.get_ev_registration_analytics("Washington", 2019)
+      expect(hash_2019[:number_registered_for_year]).to eq(0)
+      hash_2024 = @dmv.get_ev_registration_analytics("Washington", 2024)
+      expect(hash_2024[:number_registered_for_year]).to eq(@facility_1.registered_vehicles.length)
     end
+
+    # it 'can generate hash with correct # of registrations for specified year' do
+    #   #Create the same machinery as in previous test in order to have everything set up correctly...
+    #   factory = VehicleFactory.new()
+    #   factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
+    #   @facility_1.add_service("Vehicle Registration")
+    #   factory.vehicles_manufactured.each do |vehicle|
+    #     @facility_1.register_vehicle(vehicle)
+    #   end
+    #   @dmv.add_facility(@facility_1)
+
+    #   hash = @dmv.get_ev_registration_analytics("Washington", 2019)
+    #   expect(hash[:number_registered_for_year]).to eq(VALUE GOES HERE)
+    # end
+
   end
 
 end
