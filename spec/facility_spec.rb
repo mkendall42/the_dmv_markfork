@@ -39,6 +39,13 @@ RSpec.describe Facility do
       expect(facility_4.state).to eq("Wyoming")
     end
 
+    it 'can initialize with hours and potential holidays specified' do
+      facility_5 = Facility.new({name: 'DMV Made-up Branch', address: '3698 W. 44th Avenue Denver CO 80211', phone: '(720) 865-4600', state: "Wyoming", hours: "M-F 9AM-5PM", holidays: "A few days listed here"})
+
+      expect(facility_5.hours).to eq("M-F 9AM-5PM")
+      expect(facility_5.holidays).to eq("A few days listed here")
+    end
+
   end
 
   describe '#add service' do
@@ -182,8 +189,6 @@ RSpec.describe Facility do
       max_upgrades_hash = {written: true, license: true, renewed: true}
       expect(@registrant_1.license_data).to eq(max_upgrades_hash)
     end
-
   end
-
 
 end
