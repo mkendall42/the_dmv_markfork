@@ -32,7 +32,8 @@ class Dmv
         facility_info = {
           name: facility[:dmv_office],
           address: "#{facility[:address_li]} #{facility[:address__1]} #{facility[:location]} #{facility[:city]} #{facility[:state]} #{facility[:zip]}",
-          phone: facility[:phone]
+          phone: facility[:phone],
+          hours: facility[:hours]       #Iteration 4: add hours (direct copy for CO)
         }
 
         #Create facility
@@ -72,6 +73,26 @@ class Dmv
         address_formatted << facility[:zip_code]
         address_formatted = address_formatted.join(" ")
 
+        #Hours are listed for each day by opening and closing.  For now, I'm going to brute-force this,
+        #since no exact format is expected.  This is a mess though:
+        #This is gross...some facilities don't have keys for all M-F.  So I need to run ifs now (otherwise problems with nil)
+        hours_formatted = ""
+        if facility.include?(:monday_beginning_hours)
+          hours_formatted = "Monday: " + facility[:monday_beginning_hours] + " - " + facility[:monday_ending_hours] + "; "
+        end
+        if facility.include?(:tuesday_beginning_hours)
+          hours_formatted << "Tuesday: " + facility[:tuesday_beginning_hours] + " - " + facility[:tuesday_ending_hours] + "; "
+        end
+        if facility.include?(:wednesday_beginning_hours)
+          hours_formatted << "Wednesday: " + facility[:wednesday_beginning_hours] + " - " + facility[:wednesday_ending_hours] + "; "
+        end
+        if facility.include?(:thursday_beginning_hours)
+          hours_formatted << "Thursday: " + facility[:thursday_beginning_hours] + " - " + facility[:thursday_ending_hours] + "; "
+        end
+        if facility.include?(:friday_beginning_hours)
+          hours_formatted << "Friday: " + facility[:friday_beginning_hours] + " - " + facility[:friday_ending_hours]
+        end
+
         #Some of the branches don't seem to have phone numbers...make sure to process 'nil' correctly here
         #Also, trying to keep this consistently formatted between states
         phone = facility[:public_phone_number]
@@ -82,7 +103,9 @@ class Dmv
         facility_info = {
           name: name_formatted,
           address: address_formatted,
-          phone: phone_formatted
+          phone: phone_formatted,
+          #Add hours (will need parsing / formatting first)
+          hours: hours_formatted
         }
 
         #Create facility
@@ -100,13 +123,23 @@ class Dmv
 
     if state == "Missouri"
       facilities_incoming_data.each do |facility|
+        #Again, like NY, this formatting could be handled in another method...
         address_formatted = facility[:address1].delete_suffix(",")      #Certain (random?) entries end with it for some reason
         address_formatted = "#{address_formatted} #{facility[:city]} #{facility[:state]} #{facility[:zipcode]}"
+        hours_formatted = facility[:daysopen]
+        if facility.include?(:daysclosed)
+          hours_formatted << " except for " + facility[:daysclosed]
+        end
 
         facility_info = {
           name: facility[:name] + " Office",       #To be as consistent with other states as possible
           address: address_formatted,
-          phone: facility[:phone]
+          phone: facility[:phone],
+          #Add hours (may need to format a little to be consistent across states)
+          #Add holidays here (since MO provides them)
+          #Need :daysopen, :daysclosed; :holidaysclosed
+          hours: hours_formatted,
+          holidays: facility[:holidaysclosed]
         }
 
         #Create facility

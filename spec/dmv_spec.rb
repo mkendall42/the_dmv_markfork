@@ -63,6 +63,7 @@ RSpec.describe Dmv do
       expect(@dmv.facilities[1].address).to eq("4685 Peoria Street Suite 101 Arie P. Taylor  Municipal Bldg Denver CO 80239")
       expect(@dmv.facilities[2].phone).to eq("(720) 865-4600")
       expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+      expect(@dmv.facilities[3].hours).to eq("Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.")
     end
 
     it 'correctly create facilities array for New York based on API data' do
@@ -76,6 +77,7 @@ RSpec.describe Dmv do
       expect(@dmv.facilities[1].address).to eq("560 Warren Street Hudson NY 12534")
       expect(@dmv.facilities[3].phone).to eq("(718) 966-6155")
       expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+      expect(@dmv.facilities[4].hours).to eq("Monday: 7:30 AM - 5:00 PM; Tuesday: 7:30 AM - 5:00 PM; Wednesday: 7:30 AM - 5:00 PM; Thursday: 7:30 AM - 5:00 PM; Friday: 7:30 AM - 5:00 PM")
     end
 
     it 'correctly create facilities array for Missouri based on API data' do
@@ -89,6 +91,9 @@ RSpec.describe Dmv do
       expect(@dmv.facilities[1].address).to eq("108 N Monroe Versailles MO 65084")
       expect(@dmv.facilities[2].phone).to eq("(417) 334-2496")
       expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
+      #This index 17 chosen because it's an example that deviates from the norm for expected data input!
+      expect(@dmv.facilities[17].hours).to eq("Monday - Friday 8:30-4:00 except for Monday - Friday 1:15-2:00")
+      expect(@dmv.facilities[17].holidays).to eq("Thanksgiving (11/28/2024), Christmas (12/25/2024), New Year's Day (1/1/2025), Martin Luther King Jr. Day (1/20/2025), Lincoln's Birthday (2/12/2025), President's Day (2/17/2025), Truman's Birthday (5/8/2025), Memorial Day (5/26/2025), Juneteenth (6/19/2025), Independence Day (7/04/2025), Labor Day (9/1/2025), Columbus Day (10/13/2025), Veteran's Day (11/11/2025), Thanksgiving (11/27/2025), Christmas (12/25/2025)")
     end
   end
 
