@@ -25,7 +25,8 @@ class VehicleFactory
         model: vehicle[:model],
         year: vehicle[:model_year],
         #Assume the engine is always ev here (though not generally true - happy path for now)
-        engine: :ev
+        engine: :ev,
+        county: vehicle[:county]
       }
 
       #'Build' the vehicle:
