@@ -35,15 +35,29 @@ RSpec.describe VehicleFactory do
   end
 
   describe '#create_vehicles()' do
-    it 'can create vehicles from acquired vehicle registration list' do
+    #NOTE: not sure how exhaustive this test is.  I could look and verify a couple of indices to be really sure (but again, then it's dependent upon the dataset not changing!)
+    it 'can create vehicles from acquired vehicle registration list for WA' do
       #Check that the list looks about right
       expect(@registration_data_list.size).to be_a(Integer)   #Like in other spec file.  Don't know why it wouldn't be an integer...
       expect(@registration_data_list).to be_a(Array)
 
+      # binding.pry
+
+      expect(@factory.create_vehicles(@registration_data_list, "Washington")).to be_a(Array)
+      expect(@factory.create_vehicles(@registration_data_list, "Washington")).to eq(@factory.vehicles_manufactured)
+    end
+
+    it 'can create vehicles from acquired vehicle registration list for NY' do
+      #Look at NY data this time
+      ny_registration_data_list = @dds.ny_vehicle_registrations
+      expect(ny_registration_data_list.size).to be_a(Integer)   #Like in other spec file.  Don't know why it wouldn't be an integer...
+      expect(ny_registration_data_list).to be_a(Array)
+
+      ny_vehicles = @factory.create_vehicles(ny_registration_data_list, "New York")
       binding.pry
 
-      expect(@factory.create_vehicles(@registration_data_list)).to be_a(Array)
-      expect(@factory.create_vehicles(@registration_data_list)).to eq(@factory.vehicles_manufactured)
+      expect(ny_vehicles, "New York").to be_a(Array)
+      expect(ny_vehicles, "New York").to eq(@factory.vehicles_manufactured)
     end
 
   end
