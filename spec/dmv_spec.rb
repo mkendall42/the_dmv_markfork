@@ -1,11 +1,4 @@
 require 'spec_helper'
-require 'pry'
-
-#REWRITE THESE TESTS TO BE FAULT TOLERANT TO DATA SET CHANGING!
-#JUST CHECK BASICS
-#DO THIS
-#DO THIS
-
 
 RSpec.describe Dmv do
   before(:each) do

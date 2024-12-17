@@ -1,6 +1,4 @@
 require 'spec_helper'
-require './lib/registrant.rb'       #May move this to helper file later...
-require 'pry'
 
 RSpec.describe Facility do
   before(:each) do
@@ -175,7 +173,7 @@ RSpec.describe Facility do
 
       expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(true)
     end
-    
+
     it 'can only renew license for valid registrant' do
       @facility_1.add_service("Road Test")
       @facility_1.add_service("New Drivers License")

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require './lib/registrant.rb'       #May move this to helper file later...
 
 RSpec.describe Registrant do
     before(:each) do

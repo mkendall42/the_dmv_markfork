@@ -41,6 +41,5 @@ RSpec.describe Vehicle do
     end
   end
 
-  #Skipping testing plate_type and registration_date here, since it is tested via Facility class / RSpec
-  
+  #Skipping testing values of plate_type and registration_date here, since it is tested via Facility class / RSpec
 end

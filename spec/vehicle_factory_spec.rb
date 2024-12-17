@@ -1,7 +1,4 @@
 require 'spec_helper'
-require './lib/registrant.rb'       #May move this to helper file later...
-require './lib/vehicle_factory.rb' #Again, this too?
-require 'pry'
 
 RSpec.describe VehicleFactory do
   before(:each) do
@@ -55,6 +52,12 @@ RSpec.describe VehicleFactory do
 
       ny_vehicles = @factory.create_vehicles(ny_registration_data_list, "New York")
       binding.pry
+
+      #FIX THIS - SYNTAX ERROR
+      #This should just be 'ny_vehicles' I think
+      #How did I mess this up before?
+      #DO THIS
+      #DO THIS
 
       expect(ny_vehicles, "New York").to be_a(Array)
       expect(ny_vehicles, "New York").to eq(@factory.vehicles_manufactured)
