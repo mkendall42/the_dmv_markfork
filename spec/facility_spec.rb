@@ -173,6 +173,19 @@ RSpec.describe Facility do
       @facility_1.administer_written_test(@registrant_1)
       @facility_1.administer_road_test(@registrant_1)
 
+      expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(true)
+    end
+    
+    it 'can only renew license for valid registrant' do
+      @facility_1.add_service("Road Test")
+      @facility_1.add_service("New Drivers License")
+      @facility_1.add_service("Written Test")
+      @facility_1.add_service("Renew License")
+
+      #@registrant_3 cannot even have a license yet, so certainly cannot renew
+      @facility_1.administer_written_test(@registrant_3)
+      @facility_1.administer_road_test(@registrant_3)
+
       expect(@facility_1.renew_drivers_license(@registrant_3)).to eq(false)
     end
 

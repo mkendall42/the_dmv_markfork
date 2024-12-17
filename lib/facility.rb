@@ -5,7 +5,7 @@ class Facility
   @@fee_chart = {ev: 200, antique: 25, regular: 100}      #Can use again and again (class var, not instance var)
 
   def initialize(facility_info)    #Accepts a hash as argument
-    @name = facility_info[:name]
+    @name = facility_info[:name]        #@name = sanitize(facility_info)
     @address = facility_info[:address]
     @phone = facility_info[:phone]
     @services = []
