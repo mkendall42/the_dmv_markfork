@@ -1,10 +1,5 @@
 #Class appears to track DMV facilities and services offered to customers
-#UPDATE: I can use this to create (via API) all facilities and track / gather additional information
-
 require 'pry'
-
-#Will need to create and add_facilities_by_state or similar
-#Probably will need to update initialize() as well
 
 class Dmv
   attr_reader :facilities
@@ -22,6 +17,9 @@ class Dmv
       facility.services.include?(service)
     end
   end
+
+  #Larger methods below.  For future: could consider classes for DMVs in each state, to better handle
+  #idiosyncracies to procedures and different dataset formats for different states.
 
   def create_state_facilities(state, facilities_incoming_data)
     #Each state may have different API, and so we need a 'dispatching' method here

@@ -5,18 +5,12 @@ class VehicleFactory
   attr_reader :vehicles_manufactured
 
   def initialize()
-    #No explicit parameters for now (somewhat superfluous definition)
-    #Later: keep track of vehicle list here for kicks?
-    @vehicles_manufactured = []       #Keeps track of vehicles 'built' at this factory
+    @vehicles_manufactured = []
   end
 
   def create_vehicles(vehicle_registration_list, state)
-    #Should return array of created vehicles.
     #Different states produce different datasets, so need to switch based on this.
 
-    #Registration list is formatted as an array with each element a vehicle, which is a hash of many parameters
-    @vehicles_manufactured = []
-    
     vehicle_registration_list.each do |vehicle|
       #Build a hash of relevant parameters (vin, make, model, year, engine)
       #Technically this hash is not ordered correctly, but shouldn't matter for a hash (double-checking)

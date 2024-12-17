@@ -89,7 +89,6 @@ RSpec.describe Facility do
       expect(@facility_1.registered_vehicles[1].registration_date).to_not eq(nil)
       expect(@facility_1.registered_vehicles[2].registration_date).to_not eq(nil)
     end
-
   end
 
   describe '#administer_written_test' do
@@ -127,7 +126,6 @@ RSpec.describe Facility do
       expect(@facility_1.administer_written_test(@registrant_3)).to eq(false)
       expect(@registrant_3.license_data[:written]).to eq(false)
     end
-
   end
 
   describe '#administer_road_test' do

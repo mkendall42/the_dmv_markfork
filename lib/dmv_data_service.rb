@@ -1,8 +1,6 @@
 require 'faraday'
 require 'json'
 
-#Class appears to connect to data source and load remote data into local instance vars
-#NOTE: this code was fully functional, first try.  Hmmm, I wonder why... :)
 #NOTE: I see that for the vehicle data loading, it only pulls 1000 vehicles for both WA and NY.  No way that is coincidence...where is the '1000' constraint present?
 
 class DmvDataService
