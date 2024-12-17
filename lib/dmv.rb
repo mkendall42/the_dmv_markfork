@@ -83,6 +83,7 @@ class Dmv
 
     #Find county which has the most vehicle registrations.  Note high machinery overlap with most popular model...a way to combine?
     county_tally = {}
+
     @facilities.each do |facility|
       if facility.state == state
         facility.registered_vehicles.each do |vehicle|

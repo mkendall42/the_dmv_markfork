@@ -164,14 +164,15 @@ RSpec.describe Dmv do
 
     it 'can generate appropriate information for both WA and NY vehicles' do
       #Create general stuff:
-      factory = VehicleFactory.new()
+      wa_factory = VehicleFactory.new()
+      ny_factory = VehicleFactory.new()
       @dmv.add_facility(@wa_facility)
       @dmv.add_facility(@ny_facility)
 
       #Create WA vehicles and register with first facility
-      factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
+      wa_factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
       @wa_facility.add_service("Vehicle Registration")
-      factory.vehicles_manufactured.each do |vehicle|
+      wa_factory.vehicles_manufactured.each do |vehicle|
         @wa_facility.register_vehicle(vehicle)
       end
       
@@ -181,9 +182,9 @@ RSpec.describe Dmv do
       expect(wa_hash[:county_most_registered_vehicles]).to eq("King")   #Could change
 
       #Create NY vehicles and register with second facility (don't have to, but it should really be in NY...)
-      factory.create_vehicles(DmvDataService.new().ny_vehicle_registrations, "New York")
+      ny_factory.create_vehicles(DmvDataService.new().ny_vehicle_registrations, "New York")
       @ny_facility.add_service("Vehicle Registration")
-      factory.vehicles_manufactured.each do |vehicle|
+      ny_factory.vehicles_manufactured.each do |vehicle|
         @ny_facility.register_vehicle(vehicle)
       end
 
