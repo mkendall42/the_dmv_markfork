@@ -131,17 +131,18 @@ RSpec.describe Dmv do
       #Create the same machinery as in previous test in order to have everything set up correctly...
       factory = VehicleFactory.new()
       factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
-      @facility_1.add_service("Vehicle Registration")
+      @wa_facility.add_service("Vehicle Registration")
       factory.vehicles_manufactured.each do |vehicle|
-        @facility_1.register_vehicle(vehicle)
+        @wa_facility.register_vehicle(vehicle)
       end
-      @dmv.add_facility(@facility_1)
+      @dmv.add_facility(@wa_facility)
 
       #Because we're manually registering them now, all of them should be for 2024
       hash_2019 = @dmv.get_ev_registration_analytics("Washington", 2019)
       expect(hash_2019[:number_registered_for_year]).to eq(0)
       hash_2024 = @dmv.get_ev_registration_analytics("Washington", 2024)
-      expect(hash_2024[:number_registered_for_year]).to eq(@facility_1.registered_vehicles.length)
+
+      expect(hash_2024[:number_registered_for_year]).to eq(@wa_facility.registered_vehicles.length)
     end
 
     it 'can generate hash with correct most common county registered' do
@@ -161,8 +162,7 @@ RSpec.describe Dmv do
       expect(hash[:county_most_registered_vehicles]).to be_a(String)  #Safer, but doesn't truly see if it's working correctly
     end
 
-    it 'can generate appropriate information for both WA and NY electric vehicles' do
-      #Note: this required implementing NY vehicle registrations / creation first, of course
+    it 'can generate appropriate information for both WA and NY vehicles' do
       #Create general stuff:
       factory = VehicleFactory.new()
       @dmv.add_facility(@wa_facility)
@@ -174,12 +174,9 @@ RSpec.describe Dmv do
       factory.vehicles_manufactured.each do |vehicle|
         @wa_facility.register_vehicle(vehicle)
       end
-
-      wa_hash = @dmv.get_ev_registration_analytics("Washington", 2024)
-
-      # binding.pry
-
+      
       #Check for WA
+      wa_hash = @dmv.get_ev_registration_analytics("Washington", 2024)
       expect(wa_hash).to be_a(Hash)
       expect(wa_hash[:county_most_registered_vehicles]).to eq("King")   #Could change
 
@@ -196,6 +193,32 @@ RSpec.describe Dmv do
       expect(ny_hash[:county_most_registered_vehicles]).to eq("SUFFOLK")    #Could change
     end
 
+  end
+
+  describe '#facility_parameters_[state name]() helper methods' do
+    it 'facility_parameters_co() method returns standard formatted facility_info' do
+      colorado_facilities = DmvDataService.new.co_dmv_office_locations()
+      @dmv.create_state_facilities("Colorado", colorado_facilities)
+
+      parameters_hash = @dmv.facility_parameters_co(colorado_facilities[0])
+      expect(@dmv.facilities[0].name).to eq(parameters_hash[:name])
+    end
+
+    it 'facility_parameters_ny() method returns standard formatted facility_info' do
+      newyork_facilities = DmvDataService.new.co_dmv_office_locations()
+      @dmv.create_state_facilities("Colorado", newyork_facilities)
+
+      parameters_hash = @dmv.facility_parameters_co(newyork_facilities[0])
+      expect(@dmv.facilities[0].name).to eq(parameters_hash[:name])
+    end
+
+    it 'facility_parameters_mo() method returns standard formatted facility_info' do
+      missouri_facilities = DmvDataService.new.co_dmv_office_locations()
+      @dmv.create_state_facilities("Colorado", missouri_facilities)
+
+      parameters_hash = @dmv.facility_parameters_co(missouri_facilities[0])
+      expect(@dmv.facilities[0].name).to eq(parameters_hash[:name])
+    end
   end
 
 end
