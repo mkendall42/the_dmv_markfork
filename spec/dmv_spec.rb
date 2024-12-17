@@ -1,6 +1,12 @@
 require 'spec_helper'
 require 'pry'
 
+#REWRITE THESE TESTS TO BE FAULT TOLERANT TO DATA SET CHANGING!
+#JUST CHECK BASICS
+#DO THIS
+#DO THIS
+
+
 RSpec.describe Dmv do
   before(:each) do
     @dmv = Dmv.new
@@ -59,46 +65,44 @@ RSpec.describe Dmv do
       colorado_facilities = DmvDataService.new.co_dmv_office_locations()
       @dmv.create_state_facilities("Colorado", colorado_facilities)
 
-      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
-      #Don't really know how to make it 'time-proof' in that sense...
-      expect(@dmv.facilities[0].name).to eq("DMV Tremont Branch")
-      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
-      expect(@dmv.facilities[1].address).to eq("4685 Peoria Street Suite 101 Arie P. Taylor  Municipal Bldg Denver CO 80239")
-      expect(@dmv.facilities[2].phone).to eq("(720) 865-4600")
-      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
-      expect(@dmv.facilities[3].hours).to eq("Mon, Tue, Thur, Fri  8:00 a.m.- 4:30 p.m. / Wed 8:30 a.m.-4:30 p.m.")
+      #NOTE: I previously checked specific key-value pairs in the dataset to match, but the datasets can change (they DID for MO)
+      #So, now I'll check more permanent features, but with less specificity
+      expect(@dmv.facilities[0]).to be_a(Facility)
+      expect(@dmv.facilities[0].name).to be_a(String)
+      expect(@dmv.facilities[1].address).to be_a(String)
+      expect(@dmv.facilities[2].phone.length).to eq(14)
+      expect(@dmv.facilities[0].services).to be_a(Array)
+      expect(@dmv.facilities[3].hours).to be_a(String)
     end
 
     it 'correctly create facilities array for New York based on API data' do
       newyork_facilities = DmvDataService.new.ny_dmv_office_locations()
       @dmv.create_state_facilities("New York", newyork_facilities)
 
-      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
-      #Don't really know how to make it 'time-proof' in that sense...
-      expect(@dmv.facilities[0].name).to eq("Lake Placid County Office")
-      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
-      expect(@dmv.facilities[1].address).to eq("560 Warren Street Hudson NY 12534")
-      expect(@dmv.facilities[3].phone).to eq("(718) 966-6155")
-      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
-      expect(@dmv.facilities[4].hours).to eq("Monday: 7:30 AM - 5:00 PM; Tuesday: 7:30 AM - 5:00 PM; Wednesday: 7:30 AM - 5:00 PM; Thursday: 7:30 AM - 5:00 PM; Friday: 7:30 AM - 5:00 PM")
+      # binding.pry
+
+      expect(@dmv.facilities[0]).to be_a(Facility)
+      expect(@dmv.facilities[0].name).to be_a(String)
+      expect(@dmv.facilities[1].address).to be_a(String)
+      expect(@dmv.facilities[2].phone.length).to eq(14)
+      expect(@dmv.facilities[0].services).to be_a(Array)
+      expect(@dmv.facilities[3].hours).to be_a(String)
     end
 
     it 'correctly create facilities array for Missouri based on API data' do
       missouri_facilities = DmvDataService.new.mo_dmv_office_locations()
       @dmv.create_state_facilities("Missouri", missouri_facilities)
 
-      binding.pry
+      # binding.pry
       
-      #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
-      #Don't really know how to make it 'time-proof' in that sense...
-      expect(@dmv.facilities[0].name).to eq("Harrisonville Office")
-      #This one was really rough...extra spacing and abbreviations, etc.  Good grief!
-      expect(@dmv.facilities[1].address).to eq("108 N Monroe Versailles MO 65084")
-      expect(@dmv.facilities[2].phone).to eq("(417) 334-2496")
-      expect(@dmv.facilities[0].services).to eq(["New Drivers License", "Renew Drivers License", "Written Test", "Road Test"])
-      #This index 17 chosen because it's an example that deviates from the norm for expected data input!
-      expect(@dmv.facilities[17].hours).to eq("Monday - Friday 8:30-4:00 except for Monday - Friday 1:15-2:00")
-      expect(@dmv.facilities[17].holidays).to eq("Thanksgiving (11/28/2024), Christmas (12/25/2024), New Year's Day (1/1/2025), Martin Luther King Jr. Day (1/20/2025), Lincoln's Birthday (2/12/2025), President's Day (2/17/2025), Truman's Birthday (5/8/2025), Memorial Day (5/26/2025), Juneteenth (6/19/2025), Independence Day (7/04/2025), Labor Day (9/1/2025), Columbus Day (10/13/2025), Veteran's Day (11/11/2025), Thanksgiving (11/27/2025), Christmas (12/25/2025)")
+      #NOTE: this dataset list actually changed on me after I made tests; hence why I've moved to more 'permanent' testable aspects
+      expect(@dmv.facilities[0]).to be_a(Facility)
+      expect(@dmv.facilities[0].name).to be_a(String)
+      expect(@dmv.facilities[1].address).to be_a(String)
+      #Some office don't have a phone number listed in MO.  Need to give default string, I guess
+      expect(@dmv.facilities[2].phone.length).to eq(14)
+      expect(@dmv.facilities[0].services).to be_a(Array)
+      expect(@dmv.facilities[3].hours).to be_a(String)
     end
   end
 
@@ -107,14 +111,13 @@ RSpec.describe Dmv do
       expect(@dmv.get_ev_registration_analytics("Washington", 2019)).to be_a(Hash)
     end
 
-    it 'can generate hash with correct msot popular vehicle model' do
+    it 'can generate hash with correct most popular vehicle model' do
       #First, we need to build the vehicle regitration list and 'make' the vehicles (kept forgetting to do this!)
       factory = VehicleFactory.new()
       factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
 
       #Now we need to register the vehicles to one or more facilities (keep it one / simple for the moment)
-      #NOTE: the facility needs to have the appropriate service enabled (ARRRGH)!
-      #Also, be careful: need to make new facility actually in Washington to be consistent.
+      #NOTE: facility needs to have the appropriate service enabled, and actually be in correct state for everything to work
       @wa_facility = Facility.new({name: 'DMV Tacoma Branch', address: 'Some address', phone: '(555) 555-5555', state: "Washington"})
       @wa_facility.add_service("Vehicle Registration")
 
@@ -122,15 +125,13 @@ RSpec.describe Dmv do
         @wa_facility.register_vehicle(vehicle)
       end
 
-      #Associate the facility with the DMV:
       @dmv.add_facility(@wa_facility)
 
-      #Finally, let's look at the analytics:
       hash = @dmv.get_ev_registration_analytics("Washington", 2019)
 
-      # binding.pry
+      expect(hash[:most_popular_model]).to eq("Model 3")      #Risky - using correct model actually in the dataset to verify (could change if dataset changes)
+      expect(hash[:most_popular_model]).to be_a(String)       #Safer, but doesn't truly check if method is working correctly
 
-      expect(hash[:most_popular_model]).to eq("Model 3")              #Based off of CURRENT data...could someday change
     end
 
     it 'can generate hash with correct # of registrations for specified year' do
@@ -160,11 +161,11 @@ RSpec.describe Dmv do
       end
       @dmv.add_facility(@wa_facility)
 
-      #Need to have additional instance variable in Vehicle class to track county registered.
-      #Alternate would be deducing this from the facility it gets registered to, but we'd need a lookup function for zip code / similar
+      #Track county in Vehicle class; alternate would be deducing this from the facility it gets registered to, but we'd need a lookup function for zip code / similar
       #(beyond the scope of this project at this point...)
       hash = @dmv.get_ev_registration_analytics("Washington", 2019)
-      expect(hash[:county_most_registered_vehicles]).to eq("King")    #Again, depends on served dataset staying the same...
+      expect(hash[:county_most_registered_vehicles]).to eq("King")    #Again, risky - depends on served dataset staying the same...
+      expect(hash[:county_most_registered_vehicles]).to be_a(String)  #Safer, but doesn't truly see if it's working correctly
     end
 
     it 'can generate appropriate information for both WA and NY electric vehicles' do
@@ -187,9 +188,9 @@ RSpec.describe Dmv do
 
       #Check for WA
       expect(wa_hash).to be_a(Hash)
-      expect(wa_hash[:county_most_registered_vehicles]).to eq("King")
+      expect(wa_hash[:county_most_registered_vehicles]).to eq("King")   #Could change
 
-      #Create NY vehicles and register with second facility (don't have to, but I'd assume it's somewhere else...like NY for example)
+      #Create NY vehicles and register with second facility (don't have to, but it should really be in NY...)
       factory.create_vehicles(DmvDataService.new().ny_vehicle_registrations, "New York")
       @ny_facility.add_service("Vehicle Registration")
       factory.vehicles_manufactured.each do |vehicle|
@@ -199,7 +200,7 @@ RSpec.describe Dmv do
       #Check for NY
       ny_hash = @dmv.get_ev_registration_analytics("New York", 2024)
       expect(ny_hash).to be_a(Hash)
-      expect(ny_hash[:county_most_registered_vehicles]).to eq("SUFFOLK")
+      expect(ny_hash[:county_most_registered_vehicles]).to eq("SUFFOLK")    #Could change
     end
 
   end

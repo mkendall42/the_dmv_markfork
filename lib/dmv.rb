@@ -28,7 +28,9 @@ class Dmv
     #FOR NOW: just code this for Colorado, then can break it out from there for addt'l states
     #Also coded for NY and MO (that's all for this project)
     if state == "Colorado"
+      # hash = get_facilities_data_colorado(facilities_incoming_data)
       facilities_incoming_data.each do |facility|
+        # new_facility = Facility.new(facility_parameters(facility))
         facility_info = {
           name: facility[:dmv_office],
           address: "#{facility[:address_li]} #{facility[:address__1]} #{facility[:location]} #{facility[:city]} #{facility[:state]} #{facility[:zip]}",
@@ -77,6 +79,7 @@ class Dmv
         #since no exact format is expected.  This is a mess though:
         #This is gross...some facilities don't have keys for all M-F.  So I need to run ifs now (otherwise problems with nil)
         hours_formatted = ""
+        #Could switch this to case / when
         if facility.include?(:monday_beginning_hours)
           hours_formatted = "Monday: " + facility[:monday_beginning_hours] + " - " + facility[:monday_ending_hours] + "; "
         end
@@ -98,6 +101,8 @@ class Dmv
         phone = facility[:public_phone_number]
         if phone != nil
           phone_formatted = "(" + phone.slice(0, 3) + ") " + phone.slice(3, 3) + "-" + phone.slice(6, 4)
+        else
+          phone_formatted = "not applicable"
         end
 
         facility_info = {
