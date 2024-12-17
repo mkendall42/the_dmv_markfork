@@ -139,6 +139,10 @@ RSpec.describe Facility do
 
       expect(@facility_1.administer_road_test(@registrant_3)).to eq(false)
       expect(@registrant_3.license_data[:license]).to eq(false)
+
+      #Also do this for registrant #1 (valid registrant)
+      expect(@facility_1.administer_written_test(@registrant_1)).to eq(false)
+      expect(@facility_1.administer_road_test(@registrant_1)).to eq(false)
     end
 
     it 'road test success only for valid registrant, and updates license_data appropriately' do
@@ -167,7 +171,6 @@ RSpec.describe Facility do
       expect(@facility_1.renew_drivers_license(@registrant_1)).to eq(false)
 
       #Registrant must already have a license to do this.
-      #Bad practice to manually set that, so use methods how one would actually do it:
       @facility_1.administer_written_test(@registrant_1)
       @facility_1.administer_road_test(@registrant_1)
 
@@ -192,6 +195,8 @@ RSpec.describe Facility do
       @facility_1.add_service("New Drivers License")
       @facility_1.add_service("Written Test")
       @facility_1.add_service("Renew License")
+
+      expect(@registrant_1.license_data).to eq({written: false, license: false, renewed: false})
 
       @facility_1.administer_written_test(@registrant_1)
       @facility_1.administer_road_test(@registrant_1)
