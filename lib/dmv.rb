@@ -22,10 +22,6 @@ class Dmv
   #idiosyncracies to procedures and different dataset formats for different states.
 
   def create_state_facilities(state, facilities_incoming_data)
-    #Each state may have different API, and so we need a 'dispatching' method here
-    #FOR NOW: just code this for Colorado, then can break it out from there for addt'l states
-    #Also coded for NY and MO (that's all for this project)
-
     facilities_incoming_data.each do |facility_data|
       #Construct facility based on state, since dataset must be converted differently due to idiosyncracies in each case
       if state == "Colorado"
@@ -53,8 +49,8 @@ class Dmv
 
   def get_ev_registration_analytics(state, specified_year)
     #Determine most popular make/model registered, the # registered for specified year, and the county with most registered vehicles
-    #NOTE: I kept naming based on EV vehicles.  However, now that I've extended functionality to allow NY vehicles, this method is more general,
-    #and can analyze general NY vehicles.  (With adjustments, it could also JUST analyze NY EV vehicles.) 
+    #NOTE: I kept method naming based on EV vehicles.  However, now that I've extended functionality to allow NY vehicles (later in iteration 4), this method is more general,
+    #and can analyze general NY vehicles.
 
     vehicle_tally = {}
     @facilities.each do |facility|
@@ -83,7 +79,6 @@ class Dmv
 
     #Find county which has the most vehicle registrations.  Note high machinery overlap with most popular model...a way to combine?
     county_tally = {}
-
     @facilities.each do |facility|
       if facility.state == state
         facility.registered_vehicles.each do |vehicle|

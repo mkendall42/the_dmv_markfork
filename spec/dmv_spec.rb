@@ -179,7 +179,7 @@ RSpec.describe Dmv do
       #Check for WA
       wa_hash = @dmv.get_ev_registration_analytics("Washington", 2024)
       expect(wa_hash).to be_a(Hash)
-      expect(wa_hash[:county_most_registered_vehicles]).to eq("King")   #Could change
+      expect(wa_hash[:county_most_registered_vehicles]).to eq("King")   #Could change - risky (but very precise, no false positive here)
 
       #Create NY vehicles and register with second facility (don't have to, but it should really be in NY...)
       ny_factory.create_vehicles(DmvDataService.new().ny_vehicle_registrations, "New York")
@@ -191,7 +191,7 @@ RSpec.describe Dmv do
       #Check for NY
       ny_hash = @dmv.get_ev_registration_analytics("New York", 2024)
       expect(ny_hash).to be_a(Hash)
-      expect(ny_hash[:county_most_registered_vehicles]).to eq("SUFFOLK")    #Could change
+      expect(ny_hash[:county_most_registered_vehicles]).to eq("Suffolk")    #Could change - risky (but very precise, no false positive here)
     end
 
   end
