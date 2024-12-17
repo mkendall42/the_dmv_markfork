@@ -17,6 +17,12 @@ RSpec.describe Vehicle do
       expect(@cruz.registration_date).to eq(nil)
       expect(@cruz.plate_type).to eq(nil)
     end
+
+    it 'can initialize optional county of registration correctly' do
+      bolt_2 = Vehicle.new({vin: '1111111111', year: 2020, make: 'Chevrolet', model: 'Bolt', engine: :ev, county: 'Tacoma'})
+      expect(bolt_2).to be_a(Vehicle)
+      expect(bolt_2.registration_county).to eq("Tacoma")
+    end
   end
 
   describe '#antique?' do
