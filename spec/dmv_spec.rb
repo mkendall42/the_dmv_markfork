@@ -7,6 +7,9 @@ RSpec.describe Dmv do
     @facility_1 = Facility.new({name: 'DMV Tremont Branch', address: '2855 Tremont Place Suite 118 Denver CO 80205', phone: '(720) 865-4600'})
     @facility_2 = Facility.new({name: 'DMV Northeast Branch', address: '4685 Peoria Street Suite 101 Denver CO 80239', phone: '(720) 865-4600'})
     @facility_3 = Facility.new({name: 'DMV Northwest Branch', address: '3698 W. 44th Avenue Denver CO 80211', phone: '(720) 865-4600'})
+    @wa_facility = Facility.new({name: 'DMV Tacoma Branch', address: 'Some address', phone: '(555) 555-5555', state: "Washington"})
+    @ny_facility = Facility.new({name: 'DMV Nassau Branch', address: 'Some other address', phone: '(555) 555-5556', state: "New York"})
+
   end
 
   describe '#initialize' do
@@ -84,6 +87,8 @@ RSpec.describe Dmv do
       missouri_facilities = DmvDataService.new.mo_dmv_office_locations()
       @dmv.create_state_facilities("Missouri", missouri_facilities)
 
+      binding.pry
+      
       #NOTE: this data could change based on the API call.  It should work for the short-term, at least...
       #Don't really know how to make it 'time-proof' in that sense...
       expect(@dmv.facilities[0].name).to eq("Harrisonville Office")
@@ -105,32 +110,33 @@ RSpec.describe Dmv do
     it 'can generate hash with correct msot popular vehicle model' do
       #First, we need to build the vehicle regitration list and 'make' the vehicles (kept forgetting to do this!)
       factory = VehicleFactory.new()
-      factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
 
       #Now we need to register the vehicles to one or more facilities (keep it one / simple for the moment)
       #NOTE: the facility needs to have the appropriate service enabled (ARRRGH)!
-      @facility_1.add_service("Vehicle Registration")
+      #Also, be careful: need to make new facility actually in Washington to be consistent.
+      @wa_facility = Facility.new({name: 'DMV Tacoma Branch', address: 'Some address', phone: '(555) 555-5555', state: "Washington"})
+      @wa_facility.add_service("Vehicle Registration")
 
       factory.vehicles_manufactured.each do |vehicle|
-        # binding.pry
-        @facility_1.register_vehicle(vehicle)
+        @wa_facility.register_vehicle(vehicle)
       end
 
       #Associate the facility with the DMV:
-      @dmv.add_facility(@facility_1)
+      @dmv.add_facility(@wa_facility)
+
+      #Finally, let's look at the analytics:
+      hash = @dmv.get_ev_registration_analytics("Washington", 2019)
 
       # binding.pry
 
-      #Finally, let's look at the analytics:
-
-      hash = @dmv.get_ev_registration_analytics("Washington", 2019)
       expect(hash[:most_popular_model]).to eq("Model 3")              #Based off of CURRENT data...could someday change
     end
 
     it 'can generate hash with correct # of registrations for specified year' do
       #Create the same machinery as in previous test in order to have everything set up correctly...
       factory = VehicleFactory.new()
-      factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
       @facility_1.add_service("Vehicle Registration")
       factory.vehicles_manufactured.each do |vehicle|
         @facility_1.register_vehicle(vehicle)
@@ -147,18 +153,53 @@ RSpec.describe Dmv do
     it 'can generate hash with correct most common county registered' do
       #Create the same machinery as in previous tests in order to have everything set up correctly...
       factory = VehicleFactory.new()
-      factory.create_vehicles(DmvDataService.new().wa_ev_registrations)
-      @facility_1.add_service("Vehicle Registration")
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
+      @wa_facility.add_service("Vehicle Registration")
       factory.vehicles_manufactured.each do |vehicle|
-        @facility_1.register_vehicle(vehicle)
+        @wa_facility.register_vehicle(vehicle)
       end
-      @dmv.add_facility(@facility_1)
+      @dmv.add_facility(@wa_facility)
 
       #Need to have additional instance variable in Vehicle class to track county registered.
       #Alternate would be deducing this from the facility it gets registered to, but we'd need a lookup function for zip code / similar
       #(beyond the scope of this project at this point...)
       hash = @dmv.get_ev_registration_analytics("Washington", 2019)
       expect(hash[:county_most_registered_vehicles]).to eq("King")    #Again, depends on served dataset staying the same...
+    end
+
+    it 'can generate appropriate information for both WA and NY electric vehicles' do
+      #Note: this required implementing NY vehicle registrations / creation first, of course
+      #Create general stuff:
+      factory = VehicleFactory.new()
+      @dmv.add_facility(@wa_facility)
+      @dmv.add_facility(@ny_facility)
+
+      #Create WA vehicles and register with first facility
+      factory.create_vehicles(DmvDataService.new().wa_ev_registrations, "Washington")
+      @wa_facility.add_service("Vehicle Registration")
+      factory.vehicles_manufactured.each do |vehicle|
+        @wa_facility.register_vehicle(vehicle)
+      end
+
+      wa_hash = @dmv.get_ev_registration_analytics("Washington", 2024)
+
+      # binding.pry
+
+      #Check for WA
+      expect(wa_hash).to be_a(Hash)
+      expect(wa_hash[:county_most_registered_vehicles]).to eq("King")
+
+      #Create NY vehicles and register with second facility (don't have to, but I'd assume it's somewhere else...like NY for example)
+      factory.create_vehicles(DmvDataService.new().ny_vehicle_registrations, "New York")
+      @ny_facility.add_service("Vehicle Registration")
+      factory.vehicles_manufactured.each do |vehicle|
+        @ny_facility.register_vehicle(vehicle)
+      end
+
+      #Check for NY
+      ny_hash = @dmv.get_ev_registration_analytics("New York", 2024)
+      expect(ny_hash).to be_a(Hash)
+      expect(ny_hash[:county_most_registered_vehicles]).to eq("SUFFOLK")
     end
 
   end

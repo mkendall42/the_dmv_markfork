@@ -165,15 +165,24 @@ class Dmv
     #Most popular make/model: iterate through all vehicles with all facilities
     #Need to make a new 2D array, or a hash, that tracks model and count -> and keeps only unique entries (assume happy path that models' strings are formatted the same)
     #This took a while to get working...in part owing to having to get everything set up correctly in the test...
+    
+    #CRITICAL: now that there are registrations from multiple states, we need to break down by state
+    #FIX THIS!!!
+    #ALSO: rename the method, since it handles vehicles beyond EVs
+
     vehicle_tally = {}
     @facilities.each do |facility|
-      facility.registered_vehicles.each do |vehicle|
-        # binding.pry
+      #Only iterate through facilities in the specified state
+      if facility.state == state
 
-        if vehicle_tally.include?(vehicle.model)      #Assume just 'model' is enough (i.e. its unique and not make + model is needed)
-          vehicle_tally[vehicle.model] += 1           #Forgot to make this 'vehicle.model' for a while...was driving me crazy!
-        else
-          vehicle_tally[vehicle.model] = 1
+        facility.registered_vehicles.each do |vehicle|
+          # binding.pry
+
+          if vehicle_tally.include?(vehicle.model)      #Assume just 'model' is enough (i.e. its unique and not make + model is needed)
+            vehicle_tally[vehicle.model] += 1           #Forgot to make this 'vehicle.model' for a while...was driving me crazy!
+          else
+            vehicle_tally[vehicle.model] = 1
+          end
         end
       end
     end
@@ -225,12 +234,14 @@ class Dmv
     #Very similar machinery to the first part above.  See if it's possible to refactor to combine these later?  (Would need fancier hash at least...)
     county_tally = {}
     @facilities.each do |facility|
-      facility.registered_vehicles.each do |vehicle|
-        #Access vehicle's registration county here and add to tally hash
-        if county_tally.include?(vehicle.registration_county)      #Assume just 'model' is enough (i.e. its unique and not make + model is needed)
-          county_tally[vehicle.registration_county] += 1           #Forgot to make this 'vehicle.model' for a while...was driving me crazy!
-        else
-          county_tally[vehicle.registration_county] = 1
+      if facility.state == state
+        facility.registered_vehicles.each do |vehicle|
+          #Access vehicle's registration county here and add to tally hash
+          if county_tally.include?(vehicle.registration_county)      #Assume just 'model' is enough (i.e. its unique and not make + model is needed)
+            county_tally[vehicle.registration_county] += 1           #Forgot to make this 'vehicle.model' for a while...was driving me crazy!
+          else
+            county_tally[vehicle.registration_county] = 1
+          end
         end
       end
     end
